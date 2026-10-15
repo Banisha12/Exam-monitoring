@@ -11,3 +11,5 @@ numpy
 Pillow
 pandas
 python-dotenv
+pymysql
+cryptography
