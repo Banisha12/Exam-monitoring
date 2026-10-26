@@ -1,9 +1,12 @@
+import os
+import requests
+from PIL import Image
+from io import BytesIO
 import pandas as pd
 import numpy as np
 import random
 from faker import Faker
 from datetime import datetime, timedelta
-import os
 
 fake = Faker('en_IN')
 np.random.seed(42)
@@ -12,18 +15,41 @@ random.seed(42)
 # Ensure directory exists
 os.makedirs('../data/synthetic', exist_ok=True)
 
+# Create avatars folder
+avatar_dir = '../data/synthetic/avatars'
+os.makedirs(avatar_dir, exist_ok=True)
+
 print("🚀 Generating Synthetic Data...")
 
 # --- 1. CANDIDATES ---
 candidates = []
+print("Downloading avatars for candidates... (This might take 10-15 seconds)")
+
 for i in range(1, 101):
+    roll_number = f"STU{i:03d}"
+    avatar_filename = f"{roll_number}.jpg"
+    avatar_filepath = f"avatars/{avatar_filename}"
+    
+    # Download a random face image
+    try:
+        img_url = f"https://i.pravatar.cc/150?u={roll_number}"
+        response = requests.get(img_url, timeout=5)
+        img = Image.open(BytesIO(response.content))
+        img.save(os.path.join(avatar_dir, avatar_filename))
+    except Exception as e:
+        print(f"Could not download avatar for {roll_number}")
+
+    # Add candidate to list
     candidates.append({
         'candidate_id': i,
-        'roll_number': f"STU{i:03d}",
+        'roll_number': roll_number,
         'name': fake.name(),
         'seat_number': f"B-{random.randint(1, 100)}",
-        'department': random.choice(['CSE', 'ECE', 'MECH', 'CIVIL'])
+        'department': random.choice(['CSE', 'ECE', 'MECH', 'CIVIL']),
+        'avatar_path': avatar_filepath  # <-- NEW COLUMN ADDED HERE
     })
+
+# Save to CSV
 pd.DataFrame(candidates).to_csv('../data/synthetic/candidates.csv', index=False)
 
 # --- 2. SESSIONS ---
@@ -116,4 +142,4 @@ for s in sessions:
     })
 pd.DataFrame(ai_reports).to_csv('../data/synthetic/ai_reports.csv', index=False)
 
-print("✅ All 6 CSV datasets successfully generated in 'data/synthetic'!")
+print("✅ All 6 CSV datasets and Avatars successfully generated!")
