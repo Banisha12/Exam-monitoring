@@ -66,3 +66,42 @@ This system provides **automated monitoring** with **evidence-based integrity re
 ```bash
 git clone https://github.com/Banisha_Mallick/smart-exam-monitor.git
 cd smart-exam-monitor
+
+
+
+## 📁 Project Structure
+
+```text
+smart_exam_monitor/
+├── app.py                      # Main Flask application (Routes & DB Models)
+├── config.py                   # App configuration (MySQL URI, Secret Keys)
+├── requirements.txt            # Python dependencies (Flask, Pandas, Faker, etc.)
+├── .gitignore                  # Files to ignore (venv, __pycache__, etc.)
+│
+├── data/
+│   └── synthetic/              # Sprint 1: Generated Synthetic Datasets
+│       ├── avatars/            # 100 student avatar images (.jpg)
+│       ├── ai_reports.csv
+│       ├── candidates.csv
+│       ├── events.csv
+│       ├── risk_data.csv
+│       ├── scores.csv
+│       └── sessions.csv
+│
+├── data_science/               # Sprint 2 & 3: Data Science Pipelines
+│   ├── generate_data.py        # Sprint 1: Script to generate synthetic data & download avatars
+│   ├── pipeline.py             # Sprint 2: Preprocessing pipeline & baseline statistics
+│   ├── event_normalizer.py     # Sprint 3: Logic to group AI frames into single valid events
+│   ├── test_validation.py      # Sprint 2: Script to test edge cases (missing data, re-run consistency)
+│   └── test_zero_events.py     # Sprint 2: Script to prove Left Join handling of 0 events
+│
+├── database/
+│   └── schema.sql              # MySQL Database schema (6 tables including normalized events)
+│
+├── templates/                  # Flask HTML Templates
+│   └── base.html               # Base template layout
+│
+├── static/                     # Static assets for Flask frontend
+│   └── faces/                  # Folder for future live camera snapshots
+│
+└── venv/                       # Virtual environment (Ignored by Git)
